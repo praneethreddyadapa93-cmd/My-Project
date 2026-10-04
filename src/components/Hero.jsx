@@ -15,8 +15,8 @@ const Hero = ({ onPreloadComplete }) => {
     window.scrollTo(0, 0);
     document.body.style.overflow = 'hidden';
 
-    const target = "PORTFOLIO";
-    const start = "PRANITH";
+    const target = 'PORTFOLIO';
+    const start = 'PRANITH';
     let iterations = 0;
     let intervalId;
     let timeoutId;
@@ -24,6 +24,7 @@ const Hero = ({ onPreloadComplete }) => {
     const imageLoadPromise = new Promise((resolve) => {
       const img = new window.Image();
       img.src = centerImage;
+
       if (img.complete) {
         resolve();
       } else {
@@ -43,15 +44,21 @@ const Hero = ({ onPreloadComplete }) => {
 
       intervalId = setInterval(() => {
         setText(() => {
-          let newText = target.split("").map((letter, index) => {
-            if (index < Math.floor(iterations)) {
-              return target[index]; // Target letter
-            }
-            if (index < start.length) {
-              return start[index]; // Original letter
-            }
-            return "";
-          }).join("");
+          const newText = target
+            .split('')
+            .map((letter, index) => {
+              if (index < Math.floor(iterations)) {
+                return target[index];
+              }
+
+              if (index < start.length) {
+                return start[index];
+              }
+
+              return '';
+            })
+            .join('');
+
           return newText;
         });
 
@@ -61,35 +68,61 @@ const Hero = ({ onPreloadComplete }) => {
           // GSAP Animation Sequence
           const tl = gsap.timeline({
             onComplete: () => {
-              document.body.style.overflow = 'auto'; // Unlock scroll
-              if (onPreloadComplete) onPreloadComplete(); // Unlock rest of the website
-            }
+              document.body.style.overflow = 'auto';
+
+              if (onPreloadComplete) {
+                onPreloadComplete();
+              }
+            },
           });
 
-          // 1. Move the central text container up from 50% to its resting place
+          // 1. Move the central text container upward
           const isMobile = window.innerWidth < 768;
-          tl.to(containerRef.current, {
-            top: isMobile ? "20%" : "45%",
-            duration: 1.5,
-            ease: "power3.inOut"
-          }, "+=0.2"); // slight delay after scramble finishes
 
-          // 2. Fade and slide up the Subtitle and Buttons
-          tl.fromTo([subtitleRef.current, buttonsRef.current],
-            { y: 50, opacity: 0 },
-            { y: 0, opacity: 1, duration: 1.2, stagger: 0.2, ease: "power3.out" },
-            "-=1.0" // start animating these while the text is still moving up
+          tl.to(
+            containerRef.current,
+            {
+              top: isMobile ? '20%' : '45%',
+              duration: 1.5,
+              ease: 'power3.inOut',
+            },
+            '+=0.2'
           );
 
-          // 3. Slide the image upward to the center (no fading)
-          tl.fromTo(imageRef.current,
-            { y: "100vh" }, // start entirely offscreen at the bottom
-            { y: 0, duration: 1.5, ease: "power3.out" },
-            "-=1.2" // start sliding up around the same time
+          // 2. Fade and slide up the subtitle and buttons
+          tl.fromTo(
+            [subtitleRef.current, buttonsRef.current],
+            {
+              y: 50,
+              opacity: 0,
+            },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 1.2,
+              stagger: 0.2,
+              ease: 'power3.out',
+            },
+            '-=1.0'
+          );
+
+          // 3. Slide the image upward
+          tl.fromTo(
+            imageRef.current,
+            {
+              y: '100vh',
+            },
+            {
+              y: 0,
+              duration: 1.5,
+              ease: 'power3.out',
+            },
+            '-=1.2'
           );
         }
-        iterations += 1 / 3; // Controls the speed of the letter swap
-      }, 50); // 50ms per step
+
+        iterations += 1 / 3;
+      }, 50);
     });
 
     return () => {
@@ -99,11 +132,14 @@ const Hero = ({ onPreloadComplete }) => {
       clearInterval(intervalId);
     };
   }, [onPreloadComplete]);
-fatal: not a git repository (or any of the parent directories): .git
+
   return (
     <section
       className="relative min-h-screen flex items-end justify-center bg-cover bg-center bg-no-repeat overflow-hidden"
-      style={{ background: 'radial-gradient(circle, #222222 0%, #000000 80%)' }}
+      style={{
+        background:
+          'radial-gradient(circle, #222222 0%, #000000 80%)',
+      }}
     >
       <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
 
@@ -122,21 +158,42 @@ fatal: not a git repository (or any of the parent directories): .git
           ref={subtitleRef}
           className="absolute -bottom-8 left-1/2 -translate-x-1/2 md:translate-x-0 md:-bottom-12 md:left-8 text-white text-base md:text-2xl lg:text-4xl drop-shadow-md z-10 opacity-0 w-max"
         >
-          <span className="font-bold">Software</span> <span className="font-light italic text-gray-300">Developer</span>
+          <span className="font-bold">Software</span>{' '}
+          <span className="font-light italic text-gray-300">
+            Developer
+          </span>
         </p>
 
         <div
           ref={buttonsRef}
           className="absolute -bottom-20 left-1/2 -translate-x-1/2 md:translate-x-0 md:-bottom-12 md:left-auto md:right-20 flex items-center gap-2 md:gap-4 pointer-events-auto z-10 opacity-0 w-max"
         >
-          <a href="#contact" className="group w-8 h-8 md:w-12 md:h-12 rounded-full border border-gray-400/30 flex items-center justify-center backdrop-blur-md bg-black/20 hover:bg-white/10 hover:border-gray-400/50 transition-all duration-300 cursor-pointer">
-            <svg className="w-3 h-3 md:w-4 md:h-4 text-gray-300 transition-transform duration-300 group-hover:rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 7L7 17M7 17H16M7 17V8" />
+          <a
+            href="#contact"
+            className="group w-8 h-8 md:w-12 md:h-12 rounded-full border border-gray-400/30 flex items-center justify-center backdrop-blur-md bg-black/20 hover:bg-white/10 hover:border-gray-400/50 transition-all duration-300 cursor-pointer"
+          >
+            <svg
+              className="w-3 h-3 md:w-4 md:h-4 text-gray-300 transition-transform duration-300 group-hover:rotate-45"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M17 7L7 17M7 17H16M7 17V8"
+              />
             </svg>
           </a>
 
-          <a href="#contact" className="px-4 py-1.5 md:px-6 md:py-2.5 rounded-full border border-gray-400/30 flex items-center justify-center backdrop-blur-md bg-black/20 hover:bg-white/10 hover:border-gray-400/50 transition-all cursor-pointer">
-            <span className="text-gray-300 text-xs md:text-base italic font-light tracking-wider">Contact</span>
+          <a
+            href="#contact"
+            className="px-4 py-1.5 md:px-6 md:py-2.5 rounded-full border border-gray-400/30 flex items-center justify-center backdrop-blur-md bg-black/20 hover:bg-white/10 hover:border-gray-400/50 transition-all cursor-pointer"
+          >
+            <span className="text-gray-300 text-xs md:text-base italic font-light tracking-wider">
+              Contact
+            </span>
           </a>
         </div>
       </div>
